@@ -2,12 +2,9 @@ package me.arno.blocklog.commands;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 import me.arno.blocklog.logs.LogType;
-import me.arno.blocklog.logs.BlockEdit;
 import me.arno.blocklog.util.Query;
 import me.arno.blocklog.util.Text;
 
@@ -100,33 +97,8 @@ public class CommandWand extends BlockLogCommand {
 			player.sendMessage(ChatColor.YELLOW + "Block History" + ChatColor.BLUE + " (" + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ")" + ChatColor.DARK_GRAY + " ------------------------");
             player.sendMessage(ChatColor.GRAY + Text.addSpaces("Name", 90) + Text.addSpaces("Action", 75) + "Details");
             
-            int blockNumber = 0;
-            int blockCount = 0;
-			int blockSize = getQueueManager().getEditQueueSize();
 			int maxResults = getSettingsManager().getMaxResults();
 			
-			while(blockSize > blockNumber) {
-				BlockEdit LBlock = getQueueManager().getEditQueue().get(blockNumber); 
-				if(LBlock.getX() == location.getX() && LBlock.getY() == location.getY() && LBlock.getZ() == location.getZ() && LBlock.getWorld() == location.getWorld()) {
-					if(blockCount == maxResults)
-						break;
-					
-					Calendar calendar = GregorianCalendar.getInstance();
-					calendar.setTimeInMillis(LBlock.getDate() * 1000);
-					
-					String date =  calendar.get(Calendar.DAY_OF_MONTH) + "-" + (calendar.get(Calendar.MONTH) + 1) + " " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
-					
-					String name = Material.getMaterial(LBlock.getBlockId()).toString();
-					LogType type = LBlock.getType();
-					
-					player.sendMessage(Text.addSpaces(ChatColor.GOLD + LBlock.getPlayerName(), 99) + Text.addSpaces(ChatColor.DARK_RED + type.name(), 80) + ChatColor.GREEN + name + ChatColor.AQUA + " [" + date + "]");
-					blockCount++;
-				}
-				blockNumber++;
-			}
-			
-			
-			if(blockCount < maxResults) {
 				Query query = new Query("blocklog_blocks");
 				query.select("entity", "triggered", "block_id", "type");
 				query.selectDate("date");
@@ -135,7 +107,7 @@ public class CommandWand extends BlockLogCommand {
 				query.where("z", location.getBlockZ());
 				query.where("world", location.getWorld().getName());
 				query.orderBy("date", "DESC");
-				query.limit(maxResults - blockCount);
+				query.limit(maxResults);
 				
 				ResultSet rs = query.getResult();
 				
@@ -145,7 +117,6 @@ public class CommandWand extends BlockLogCommand {
 					
 					player.sendMessage(Text.addSpaces(ChatColor.GOLD + rs.getString("triggered"), 99) + Text.addSpaces(ChatColor.DARK_RED + type.name(), 81) + ChatColor.GREEN + name + ChatColor.AQUA + " [" + rs.getString("date") + "]");
 				}
-			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

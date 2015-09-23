@@ -1,11 +1,11 @@
 name: BlockLog
 main: me.arno.blocklog.BlockLog
-version: 2.2.3
-author: anerach
+version: 2.2.3-CC0-210224
+author: uroskn,anearch
 dev-url: http://dev.bukkit.org/server-mods/block-log
 description: >
             A simple and effective log plugin with anti-grief features
-softdepend: [Pail]
+softdepend: [WorldEdit]
 commands:
     blocklog:
         description: Shows basic blocklog information
@@ -36,7 +36,6 @@ permissions:
         description: Gives access to some blocklog commands
         children:
             blocklog.help: true
-            blocklog.report.write: true
         default: true
     blocklog.help:
         description: Gives access to the help command
@@ -44,12 +43,6 @@ permissions:
         description: Gives access to the wand command
     blocklog.notices:
         description: Everyone with this command will receive messages from blocklog
-    blocklog.save:
-        description: Gives access to the save commands
-    blocklog.autosave:
-        description: Gives access to the autosave command
-    blocklog.rollback:
-        description: Gives access to all the rollback releated commands
     blocklog.config:
         description: Gives access to the config command
     blocklog.reload:
@@ -58,11 +51,5 @@ permissions:
         description: Gives access to the storage command
     blocklog.queue:
         description: Gives access to the queue command
-    blocklog.purge:
-        description: Gives access to the purge command
-    blocklog.report.write:
-        description: Gives the ability to report griefs
-    blocklog.report.read:
-        description: Gives the ability to read grief reports
     blocklog.search:
         description: Gives access to the search command

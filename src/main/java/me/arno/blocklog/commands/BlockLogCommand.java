@@ -1,7 +1,6 @@
 package me.arno.blocklog.commands;
 
 import java.sql.Connection;
-import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -82,14 +81,6 @@ public class BlockLogCommand {
 			return player.isOp();
 		
 		return false;
-	}
-	
-	public HashMap<Integer, Integer> getSchedules() {
-		return plugin.getSchedules();
-	}
-	
-	public void addSchedule(Integer id, Integer rollback) {
-		plugin.getSchedules().put(id, rollback);
 	}
 	
 	public Integer convertToUnixtime(Integer timeInt, String timeVal) {

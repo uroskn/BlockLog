@@ -21,6 +21,11 @@ public class BlockEdit {
 	private final BlockState block;
 	private final EntityType entity;
 	private final GameMode gamemode;
+	private final int blockid;
+	private final byte blockdata;
+	private final Location loc;
+	private final World world;
+	private final String pname;
 	
 	private final long date;
 	
@@ -34,6 +39,28 @@ public class BlockEdit {
 		this.type = type;
 		this.date = (System.currentTimeMillis()/1000);
 		this.gamemode  = (player == null) ? GameMode.SURVIVAL : player.getGameMode();
+		this.loc = null;
+		this.blockid = 0;
+		this.blockdata = 0;
+		this.world = null;
+		this.pname = (player == null) ? "#environment" : player.getName().toLowerCase();
+	}
+	
+	/* ugly hack */
+	public BlockEdit(String name, GameMode gm, int blockid, byte blockdata, Location loc, LogType type, World world)
+	{
+		this.plugin = BlockLog.plugin;
+		this.player = null;
+		this.blockid = blockid;
+		this.blockdata = blockdata;
+		this.loc = loc;
+		this.type = type;
+		this.date = (System.currentTimeMillis()/1000);
+		this.gamemode = gm;
+		this.entity = EntityType.PLAYER;
+		this.block = null;
+		this.world = world;
+		this.pname = name.toLowerCase();
 	}
 
 	public void save() {
@@ -58,11 +85,13 @@ public class BlockEdit {
 	}
 	
 	public int getBlockId() {
-		return block.getTypeId();
+		if (block != null) return block.getTypeId();
+		else return blockid;
 	}
 	
 	public byte getDataValue() {
-		return block.getData().getData();
+		if (block != null) return block.getData().getData();
+		else return blockdata;
 	}
 	
 	public BlockState getBlock() {
@@ -70,11 +99,13 @@ public class BlockEdit {
 	}
 	
 	public World getWorld() {
-		return block.getWorld();
+		if (block != null) return block.getWorld();
+		else return this.world;
 	}
 	
 	public Location getLocation() {
-		return block.getLocation();
+		if (block != null) return block.getLocation();
+		else return loc;
 	}
 	
 	public Player getPlayer() {
@@ -82,7 +113,7 @@ public class BlockEdit {
 	}
 	
 	public String getPlayerName() {
-		return (player == null) ? "environment" : player.getName().toLowerCase();
+		return this.pname.replaceAll("'", "''");
 	}
 	
 	public int getRollback() {
@@ -107,16 +138,19 @@ public class BlockEdit {
 	
 	public int getX()
 	{
-		return block.getLocation().getBlockX();
+		if (block != null) return block.getLocation().getBlockX();
+		else return loc.getBlockX();
 	}
 	
 	public int getY()
 	{
-		return block.getLocation().getBlockY();
+		if (block != null) return block.getLocation().getBlockY();
+		else return loc.getBlockY();
 	}
 	
 	public int getZ()
 	{
-		return block.getLocation().getBlockZ();
+		if (block != null) return block.getLocation().getBlockZ();
+		else return loc.getBlockZ();
 	}
 }

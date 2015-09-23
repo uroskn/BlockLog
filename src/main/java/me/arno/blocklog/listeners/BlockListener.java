@@ -1,8 +1,6 @@
 package me.arno.blocklog.listeners;
 
 import me.arno.blocklog.logs.LogType;
-import me.ryanhamshire.GriefPrevention.Claim;
-import me.ryanhamshire.GriefPrevention.GriefPrevention;
 
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -19,8 +17,9 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldedit.blocks.BlockType;
 
 public class BlockListener extends BlockLogListener {
 
@@ -31,19 +30,6 @@ public class BlockListener extends BlockLogListener {
 		
 		Boolean cancel = !getSettingsManager().isLoggingEnabled(player.getWorld(), LogType.PLACE);
 		
-		if(getDependencyManager().isDependencyEnabled("GriefPrevention")) {
-			GriefPrevention gp = (GriefPrevention) getDependencyManager().getDependency("GriefPrevention");
-			Claim claim = gp.dataStore.getClaimAt(block.getLocation(), false, null);
-			
-			if(claim != null)
-				cancel = claim.allowBuild(player) != null;
-		}
-		
-		if(getDependencyManager().isDependencyEnabled("WorldGuard")) {
-			WorldGuardPlugin wg = (WorldGuardPlugin) getDependencyManager().getDependency("WorldGuard");
-			cancel = !wg.canBuild(player, block.getLocation());
-		}
-		
 		boolean WandEnabled = plugin.users.contains(event.getPlayer().getName());
 		
 		if(event.getPlayer().getItemInHand().getType() == getSettingsManager().getWand() && WandEnabled)
@@ -51,7 +37,6 @@ public class BlockListener extends BlockLogListener {
 		
 		if(!event.isCancelled() && !cancel) {
 			getQueueManager().queueBlockEdit(player, block, EntityType.PLAYER, LogType.PLACE);
-			BlocksLimitReached();
 		}
 	}
 
@@ -60,24 +45,8 @@ public class BlockListener extends BlockLogListener {
 		BlockState block = event.getBlock().getState();
 		Player player = event.getPlayer();
 		
-		Boolean cancel = !getSettingsManager().isLoggingEnabled(player.getWorld(), LogType.BREAK);
-		
-		if(getDependencyManager().isDependencyEnabled("GriefPrevention")) {
-			GriefPrevention gp = (GriefPrevention) getDependencyManager().getDependency("GriefPrevention");
-			Claim claim = gp.dataStore.getClaimAt(block.getLocation(), false, null);
-			
-			if(claim != null)
-				cancel = claim.allowBuild(player) != null;
-		}
-		
-		if(getDependencyManager().isDependencyEnabled("WorldGuard")) {
-			WorldGuardPlugin wg = (WorldGuardPlugin) getDependencyManager().getDependency("WorldGuard");
-			cancel = !wg.canBuild(player, block.getLocation());
-		}
-		
-		if(!event.isCancelled() && !cancel) {
+		if(!event.isCancelled() && getSettingsManager().isLoggingEnabled(player.getWorld(), LogType.BREAK)) {
 			getQueueManager().queueBlockEdit(player, block, LogType.BREAK);
-			BlocksLimitReached();
 		}
 	}
 	
@@ -100,7 +69,6 @@ public class BlockListener extends BlockLogListener {
 	public void onBlockBurn(BlockBurnEvent event) {
 		if(!event.isCancelled() && getSettingsManager().isLoggingEnabled(event.getBlock().getWorld(), LogType.FIRE)) {
 			getQueueManager().queueBlockEdit(event.getBlock().getState(), LogType.FIRE);
-			BlocksLimitReached();
 		}
 	}
 	
@@ -109,7 +77,6 @@ public class BlockListener extends BlockLogListener {
 		if(!event.isCancelled() && event.getPlayer() != null) {
 			if(event.getBlock().getType() == Material.TNT && getSettingsManager().isLoggingEnabled(event.getPlayer().getWorld(), LogType.BREAK)) {
 				getQueueManager().queueBlockEdit(event.getPlayer(), event.getBlock().getState(), LogType.BREAK);
-				BlocksLimitReached();
 			}
 		}
 	}
@@ -119,7 +86,6 @@ public class BlockListener extends BlockLogListener {
 		if(!event.isCancelled()) {
 			if(getSettingsManager().isLoggingEnabled(event.getBlock().getWorld(), LogType.LEAVES)) {
 				getQueueManager().queueBlockEdit(event.getBlock().getState(), LogType.LEAVES);
-				BlocksLimitReached();
 			}
 		}
 	}
@@ -129,28 +95,69 @@ public class BlockListener extends BlockLogListener {
 		if(!event.isCancelled()) {
 			if(getSettingsManager().isLoggingEnabled(event.getNewState().getWorld(), LogType.FORM)) {
 				getQueueManager().queueBlockEdit(event.getNewState(), LogType.FORM);
-				BlocksLimitReached();
 			}
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void EntityChangeBlockEvent(EntityChangeBlockEvent event)
+	{
+		if ((event.isCancelled()) || (event.getEntity().getType() == EntityType.FALLING_BLOCK)) return;
+		BlockState state = event.getBlock().getState();
+		LogType type = null;
+		if (event.getEntity().getType() == EntityType.SHEEP) type = LogType.SHEEP;		
+		//else if (event.getEntity().getType() == EntityType.WITHER) type = LogType.WITHER;
+		else if (event.getEntity().getType() == EntityType.ENDERMAN)
+		{
+			if (event.getTo() == Material.AIR) type = LogType.ENDERMEN_PICKUP;
+			else 
+			{
+				type = LogType.ENDERMEN_PLACE;
+				state = event.getBlock().getState();
+				state.setType(event.getTo());
+			}
+		}
+		else if (event.getEntity().getType() == EntityType.SILVERFISH)
+		{
+			if (event.getTo() == Material.AIR) type = LogType.SILVERFISH_BREAK;
+			else 
+			{
+				type = LogType.SILVERFISH_EGG;
+				state = event.getBlock().getState();
+				state.setType(event.getTo());
+			}
+		}
+		else if (event.getEntity().getType() == EntityType.BOAT)
+		{
+			type = LogType.BOAT;
+			state = event.getBlock().getState();
+			state.setType(event.getTo());
+		}
+		if ((state == null) || (type == null)) return;
+		getQueueManager().queueBlockEdit(state, event.getEntityType(), type);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockSpread(BlockSpreadEvent event) {
 		if(!event.isCancelled()) {
 			if(getSettingsManager().isLoggingEnabled(event.getNewState().getWorld(), LogType.SPREAD)) {
-				getQueueManager().queueBlockEdit(event.getBlock().getState(), LogType.FADE);
+				//getQueueManager().queueBlockEdit(event.getBlock().getState(), LogType.FADE);
 				getQueueManager().queueBlockEdit(event.getNewState(), LogType.SPREAD);
-				BlocksLimitReached();
 			}
 		}
 	}
 	
+	
+	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockFade(BlockFadeEvent event) {
-		if(!event.isCancelled()) {
+		if((!event.isCancelled()) && (event.getNewState().getType() != Material.GRASS)){
+			BlockState result = event.getNewState();
+			if ((event.getNewState().getType() == Material.AIR) && 
+				((event.getBlock().getType() == Material.SNOW) || (event.getBlock().getType() == Material.FIRE)))
+			   result = event.getBlock().getState();
 			if(getSettingsManager().isLoggingEnabled(event.getNewState().getWorld(), LogType.FADE)) {
-				getQueueManager().queueBlockEdit(event.getNewState(), LogType.FADE);
-				BlocksLimitReached();
+				getQueueManager().queueBlockEdit(result, LogType.FADE);
 			}
 		}
 	}

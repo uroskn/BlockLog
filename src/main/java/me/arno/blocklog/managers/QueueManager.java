@@ -1,20 +1,23 @@
 package me.arno.blocklog.managers;
 
-import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import me.arno.blocklog.logs.InteractionType;
 import me.arno.blocklog.logs.LogType;
 import me.arno.blocklog.logs.BlockEdit;
-import me.arno.blocklog.logs.BlockInteraction;
+
+import net.knuples.misc.StatCounter;
 
 public class QueueManager extends BlockLogManager {
-	private final ArrayList<BlockEdit> blockEdits = new ArrayList<BlockEdit>();
-	private final ArrayList<BlockInteraction> blockInteractions = new ArrayList<BlockInteraction>();
+	private final ConcurrentLinkedQueue<BlockEdit> blockEdits = new ConcurrentLinkedQueue<BlockEdit>();
+	
+	private StatCounter inrate = new StatCounter();
+	private StatCounter outrate = new StatCounter();
 	
 	/**
 	 * Logs a block edit by the environment.
@@ -61,19 +64,14 @@ public class QueueManager extends BlockLogManager {
 	 * @param type {@link LogType} of the log
 	 */
 	public void queueBlockEdit(Player player, BlockState block, EntityType entity, LogType type) {
+		inrate.Count();
 		blockEdits.add(new BlockEdit(player, block, entity, type));
 	}
 	
-	/**
-	 * Logs a block interaction by a player.
-	 * This can be either when a player uses a lever or when he opens a chest
-	 * 
-	 * @param player The {@link Player} that triggered the event
-	 * @param location The {@link Location} where this event happened
-	 * @param type {@link InteractionType} of the log
-	 */
-	public void queueBlockInteraction(Player player, Location location, InteractionType type) {
-		blockInteractions.add(new BlockInteraction(player, location, type));
+	public void queueBlockEditWE(String name, GameMode gm, int blockid, byte blockdata, Location loc, org.bukkit.World world, LogType type)
+	{
+		inrate.Count();
+		blockEdits.add(new BlockEdit(name, gm, blockid, blockdata, loc, type, world));
 	}
 	
 	/**
@@ -81,17 +79,8 @@ public class QueueManager extends BlockLogManager {
 	 * 
 	 * @return An {@link ArrayList} containing all the unsaved block edits
 	 */
-	public ArrayList<BlockEdit> getEditQueue() {
+	public ConcurrentLinkedQueue<BlockEdit> getEditQueue() {
 		return blockEdits;
-	}
-	
-	/**
-	 * Gets a list of unsaved block interactions
-	 * 
-	 * @return An {@link ArrayList} containing all the unsaved block interactions
-	 */
-	public ArrayList<BlockInteraction> getInteractionQueue() {
-		return blockInteractions;
 	}
 	
 	/**
@@ -103,88 +92,20 @@ public class QueueManager extends BlockLogManager {
 		return blockEdits.size();
 	}
 	
-	/**
-	 * Gets the amount of unsaved block interactions
-	 * 
-	 * @return An integer value that represents the amount of unsaved block interactions
-	 */
-	public int getInteractionQueueSize() {
-		return blockInteractions.size();
+	public void TickSave()
+	{
+		outrate.Count();
 	}
 	
-	/**
-	 * Gets a queued block edit
-	 * 
-	 * @param index The index of the queued block edit
-	 * @return A {@link BlockEdit} object that represents the queued block edit
-	 */
-	public BlockEdit getQueuedBlockEdit(int index) throws IndexOutOfBoundsException {
-		return getEditQueue().get(index);
+	public int GetInRate()
+	{
+		return inrate.GetRate();
 	}
 	
-	/**
-	 * Gets the oldest queued block edit
-	 * 
-	 * @return A {@link BlockEdit} object that represents the queued block edit
-	 */
-	public BlockEdit getOldestQueuedBlockEdit() {
-		return getEditQueue().get(0);
+	public int GetOutRate()
+	{
+		return outrate.GetRate();
 	}
+
 	
-	/**
-	 * Gets a queued block interaction
-	 * 
-	 * @param index The index of the queued block interaction
-	 * @return A {@link BlockInteraction} object that represents a queued block interaction
-	 */
-	public BlockInteraction getQueuedInteraction(int index) throws IndexOutOfBoundsException {
-		return getInteractionQueue().get(index);
-	}
-	
-	/**
-	 * Gets the oldest queued block interaction
-	 * 
-	 * @return A {@link BlockInteraction} object that represents a queued block interaction
-	 */
-	public BlockInteraction getOldestQueuedInteraction() {
-		return getInteractionQueue().get(0);
-	}
-	
-	/**
-	 * Saves the oldest queued block edit
-	 */
-	public void saveQueuedEdit() {
-		saveQueuedEdit(0);
-	}
-	
-	/**
-	 * Saves a queued block edit
-	 * 
-	 * @param index The index of the queued block interaction
-	 */
-	public void saveQueuedEdit(int index) throws IndexOutOfBoundsException {
-		if(getEditQueueSize() > index) {
-			getEditQueue().get(index).save();
-			getEditQueue().remove(index);
-		}
-	}
-	
-	/**
-	 * Saves the oldest queued block interactions
-	 */
-	public void saveQueuedInteraction() {
-		saveQueuedInteraction(0);
-	}
-	
-	/**
-	 * Saves a queued block interactions
-	 * 
-	 * @param index The index of the queued block interaction
-	 */
-	public void saveQueuedInteraction(int index) throws IndexOutOfBoundsException {
-		if(getInteractionQueueSize() > index) {
-			getInteractionQueue().get(index).save();
-			getInteractionQueue().remove(index);
-		}
-	}
 }

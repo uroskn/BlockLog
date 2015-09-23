@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.world.StructureGrowEvent;
-import org.bukkit.event.world.WorldSaveEvent;
 
 public class WorldListener extends BlockLogListener {
 
@@ -19,15 +18,8 @@ public class WorldListener extends BlockLogListener {
 				for(BlockState block : event.getBlocks()) {
 					getQueueManager().queueBlockEdit(player, block, LogType.GROW);
 				}
-				BlocksLimitReached();
 			}
 		}
 	}
 	
-	@EventHandler
-	public void onWorldSave(WorldSaveEvent event) {
-		if(getSettingsManager().saveOnWorldSave()) {
-			plugin.saveLogs(0);
-		}
-	}
 }

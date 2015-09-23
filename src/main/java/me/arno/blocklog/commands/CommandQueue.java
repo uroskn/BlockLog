@@ -12,20 +12,29 @@ public class CommandQueue extends BlockLogCommand {
 
 	@Override
 	public boolean execute(Player player, Command cmd, String[] args) {
-		if(args.length > 0)
-			return false;
 		
 		if(!hasPermission(player)) {
 			player.sendMessage("You don't have permission");
 			return true;
 		}
 		
-		if(player == null) {
-			log.info(String.format("The queue contains %s block edits", getQueueManager().getEditQueueSize()));
-			log.info(String.format("The queue contains %s block interactions", getQueueManager().getInteractionQueueSize()));
-		} else {
-			player.sendMessage(String.format(ChatColor.DARK_RED +"[BlockLog] " + ChatColor.GOLD + "The queue contains %s block edits", getQueueManager().getEditQueueSize()));
-			player.sendMessage(String.format(ChatColor.DARK_RED +"[BlockLog] " + ChatColor.GOLD + "The queue contains %s block interactions", getQueueManager().getInteractionQueueSize()));
+		if (args.length == 0)
+		{
+			if(player == null) {
+				log.info(String.format("The queue contains %s block edits", getQueueManager().getEditQueueSize()));
+				log.info(String.format("Inrate @ %s b/s, Outrate %s b/s", getQueueManager().GetInRate(), getQueueManager().GetOutRate()));
+			} else {
+				player.sendMessage(String.format(ChatColor.DARK_RED +"[BlockLog] " + ChatColor.GOLD + "The queue contains %s block edits", getQueueManager().getEditQueueSize()));
+				player.sendMessage(String.format(ChatColor.DARK_RED +"[BlockLog] " + ChatColor.GOLD + "Inrate @ %s b/s, Outrate %s b/s", getQueueManager().GetInRate(), getQueueManager().GetOutRate()));
+			}
+		}
+		else
+		{
+			if (args[0].equalsIgnoreCase("write"))
+			{
+				if (player == null) log.info(String.format("Queue flushing enabled status: %s", (new Boolean(this.plugin.SetSaving()).toString())));
+				else player.sendMessage(String.format(ChatColor.DARK_RED +"[BlockLog] " + ChatColor.GOLD + "Queue flushing enabled status: %s", (new Boolean(this.plugin.SetSaving()).toString())));
+			}
 		}
 		return true;
 	}
