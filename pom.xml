@@ -20,19 +20,12 @@
   		<artifactId>bukkit</artifactId>
   		<version>1.2.5-R3.0</version>
   	</dependency>
-  	<!-- <dependency>
-		<groupId>com.gmail.nossr50.mcMMO</groupId>
-		<artifactId>mcMMO</artifactId>
-		<version>1.3.06</version>
+  	<dependency>
+		<groupId>com.sk89q.worldedit</groupId>
+		<artifactId>worldedit</artifactId>
+		<version>5.5.5</version>
 		<scope>system</scope>
-		<systemPath>${project.basedir}/lib/mcMMO.jar</systemPath>
+		<systemPath>${project.basedir}/lib/WorldEdit.jar</systemPath>
 	</dependency>
-	<dependency>
-		<groupId>me.escapeNT.pail</groupId>
-   		<artifactId>Pail</artifactId>
-		<version>0.8</version>
-		<scope>system</scope>
-		<systemPath>${project.basedir}/lib/Pail.jar</systemPath>
-	</dependency> -->
   </dependencies>
 </project>
