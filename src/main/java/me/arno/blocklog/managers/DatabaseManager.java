@@ -9,7 +9,6 @@ import me.arno.blocklog.BlockLog;
 public class DatabaseManager extends BlockLogManager {
 	public static final String databasePrefix = "blocklog_";
 	public static final String[] databaseTables = {"blocks", "kills", "deaths"};
-	public static final String[] purgeableTables = {"blocks", "deaths", "kills"};
 	
 	public Connection getConnection() throws SQLException {
 		try {
