@@ -12,31 +12,6 @@ commands:
         aliases: bl
         usage: /<command>
 permissions:
-    blocklog.admin:
-        description: Gives access to all the blocklog commands
-        children:
-            blocklog.moderator: true
-            blocklog.reload: true
-            blocklog.config: true
-            blocklog.purge: true
-            blocklog.autosave: true
-    blocklog.moderator:
-        description: Gives access to most of the blocklog commands
-        children:
-            blocklog.user: true
-            blocklog.wand: true
-            blocklog.notices: true
-            blocklog.save: true
-            blocklog.rollback: true
-            blocklog.storage: true
-            blocklog.queue: true
-            blocklog.report.read: true
-            blocklog.search: true
-    blocklog.user:
-        description: Gives access to some blocklog commands
-        children:
-            blocklog.help: true
-        default: true
     blocklog.help:
         description: Gives access to the help command
     blocklog.wand:
@@ -45,10 +20,6 @@ permissions:
         description: Everyone with this command will receive messages from blocklog
     blocklog.config:
         description: Gives access to the config command
-    blocklog.reload:
-        description: Gives access to the reload command
-    blocklog.storage:
-        description: Gives access to the storage command
     blocklog.queue:
         description: Gives access to the queue command
     blocklog.search:
