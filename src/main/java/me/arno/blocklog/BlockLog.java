@@ -122,6 +122,12 @@ public class BlockLog extends JavaPlugin {
 			BlockLogEditSessionFactory.initialize(this);
 		}
     	
+    	if (getPluginManager().getPlugin("TreeAssist") != null)
+    	{
+    		log.info("Found TreeAssist!");
+    		getServer().getPluginManager().registerEvents(new TreeAssistListener(), this);
+    	}
+    	
     	saveThread = new Save();
     	saveThread.start();
     }
