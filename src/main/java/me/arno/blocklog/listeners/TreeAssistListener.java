@@ -9,14 +9,14 @@ import org.bukkit.event.EventPriority;
 
 public class TreeAssistListener extends BlockLogListener {
 	
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.MONITOR,ignoreCancelled = true)
 	public void onTreeEvent(TATreeBrokenEvent event)
 	{
 		if (event.getPlayer() != null) 
 			getQueueManager().queueBlockEdit(event.getPlayer(), event.getBlock().getState(), LogType.BREAK);
 	}
 	
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.MONITOR,ignoreCancelled = true)
 	public void onCustomLeafEvent(TALeafDecay event)
 	{
 		getQueueManager().queueBlockEdit(event.getBlock().getState(), LogType.LEAVES);
