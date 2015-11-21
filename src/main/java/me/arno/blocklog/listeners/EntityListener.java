@@ -1,9 +1,12 @@
 package me.arno.blocklog.listeners;
 
+import java.util.List;
+
 import me.arno.blocklog.logs.LogType;
 import me.arno.blocklog.logs.PlayerDeath;
 import me.arno.blocklog.logs.PlayerKill;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -20,6 +23,9 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class EntityListener extends BlockLogListener {
+	
+	// Ugly hack for creeperheal. I guess I should fix it sometime later.
+	static public List<BlockState> last_event_blocks;
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityExplode(EntityExplodeEvent event) {
@@ -43,12 +49,25 @@ public class EntityListener extends BlockLogListener {
 				}
 			}
 			
+			List<Block> lastblocks = event.blockList();
+			if (last_event_blocks != null)
+			{
+				for (BlockState block : last_event_blocks)
+				{
+					if(block.getType() != Material.TNT) {
+						if(target == null) getQueueManager().queueBlockEdit(block, entityType, logType);
+						else getQueueManager().queueBlockEdit(target, block, entityType, logType);
+					}
+				}
+				last_event_blocks = null;
+				return;
+			}
+			
 			for(Block block : event.blockList()) {
+				if (block.getType() == Material.AIR) continue;
 				if(block.getType() != Material.TNT) {
-					if(target == null)
-						getQueueManager().queueBlockEdit(block.getState(), entityType, logType);
-					else
-						getQueueManager().queueBlockEdit(target, block.getState(), entityType, logType);
+					if(target == null) getQueueManager().queueBlockEdit(block.getState(), entityType, logType);
+					else getQueueManager().queueBlockEdit(target, block.getState(), entityType, logType);
 				}
 			}
 		}

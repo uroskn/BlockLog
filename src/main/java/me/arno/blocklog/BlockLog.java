@@ -128,6 +128,12 @@ public class BlockLog extends JavaPlugin {
     		getServer().getPluginManager().registerEvents(new TreeAssistListener(), this);
     	}
     	
+    	if (getPluginManager().getPlugin("CreeperHeal") != null)
+    	{
+    		log.info("Found CreeperHeal!");
+    		getServer().getPluginManager().registerEvents(new CreeperHealListener(), this);
+    	}
+    	
     	saveThread = new Save();
     	saveThread.start();
     }
