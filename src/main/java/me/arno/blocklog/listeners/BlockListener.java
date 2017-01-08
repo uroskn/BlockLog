@@ -141,7 +141,6 @@ public class BlockListener extends BlockLogListener {
 	public void onBlockSpread(BlockSpreadEvent event) {
 		if(!event.isCancelled()) {
 			if(getSettingsManager().isLoggingEnabled(event.getNewState().getWorld(), LogType.SPREAD)) {
-				//getQueueManager().queueBlockEdit(event.getBlock().getState(), LogType.FADE);
 				getQueueManager().queueBlockEdit(event.getNewState(), LogType.SPREAD);
 			}
 		}
