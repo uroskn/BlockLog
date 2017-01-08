@@ -43,7 +43,6 @@ public class CreeperHealListener extends BlockLogListener {
 	@EventHandler(priority = EventPriority.MONITOR,ignoreCancelled = true)
 	public void explosionEvent(CHExplosionRecordEvent event)
 	{
-		Bukkit.broadcastMessage("CH!");
 		List<BlockState> bs = new ArrayList<BlockState>();
 		for (Block bl : event.getBlocks()) bs.add(bl.getState());
 		EntityListener.last_event_blocks = bs;
