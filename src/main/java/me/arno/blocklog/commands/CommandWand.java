@@ -3,6 +3,7 @@ package me.arno.blocklog.commands;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import me.arno.blocklog.logs.LogType;
 import me.arno.blocklog.util.Query;
@@ -33,7 +34,7 @@ public class CommandWand extends BlockLogCommand {
 		
 		if(args.length == 1) {
 			if(args[0].equalsIgnoreCase("target")) {
-				getBlockEdits(player, player.getTargetBlock(null, 0).getLocation());
+				getBlockEdits(player, player.getTargetBlock((HashSet<Byte>)null, 0).getLocation());
 				return true;
 			}
 		}
