@@ -1,6 +1,6 @@
 name: BlockLog
 main: me.arno.blocklog.BlockLog
-version: 2.2.3-CC0-191122
+version: 2.2.3-CC0-09012017
 author: uroskn,anearch
 dev-url: http://dev.bukkit.org/server-mods/block-log
 description: >
@@ -16,11 +16,7 @@ permissions:
         description: Gives access to the help command
     blocklog.wand:
         description: Gives access to the wand command
-    blocklog.notices:
-        description: Everyone with this command will receive messages from blocklog
     blocklog.config:
         description: Gives access to the config command
     blocklog.queue:
         description: Gives access to the queue command
-    blocklog.search:
-        description: Gives access to the search command

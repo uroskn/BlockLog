@@ -30,13 +30,6 @@ public class CommandHelp extends BlockLogCommand {
 		if(player.hasPermission("blocklog.queue"))
 			player.sendMessage(ChatColor.DARK_RED +"/bl queue" + ChatColor.GOLD + " - Shows the total amount of queued block edits and interactions");
 		
-		/*if(player.hasPermission("blocklog.lookup"))
-			player.sendMessage(ChatColor.DARK_RED +"/bl lookup" + ChatColor.GOLD + " - Used to search the database for a player's latest actions");
-		
-		if(player.hasPermission("blocklog.search"))
-			player.sendMessage(ChatColor.DARK_RED +"/bl search" + ChatColor.GOLD + " - Used to search the database for results");
-		*/
-		
 		if(player.hasPermission("blocklog.wand"))
 			player.sendMessage(ChatColor.DARK_RED +"/bl wand" + ChatColor.GOLD + " - Enables blocklog's wand");
 		player.sendMessage(ChatColor.DARK_RED +"/blocklog" + ChatColor.GOLD + " - Basic Information");
