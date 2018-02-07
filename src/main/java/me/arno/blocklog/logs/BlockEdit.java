@@ -29,8 +29,6 @@ public class BlockEdit {
 	
 	private final long date;
 	
-	private int rollback = 0;
-	
 	public BlockEdit(Player player, BlockState block, EntityType entity, LogType type) {
 		this.plugin = BlockLog.plugin;
 		this.player = player;
@@ -66,7 +64,7 @@ public class BlockEdit {
 	public void save() {
 		try {
 			Statement stmt = plugin.conn.createStatement();
-			stmt.executeUpdate("INSERT INTO blocklog_blocks (entity, triggered, block_id, datavalue, gamemode, world, date, x, y, z, type, rollback_id) VALUES ('" + getEntityName() + "', '" + getPlayerName() + "', " + getBlockId() + ", " + getDataValue() + ", " + getPlayerGameMode() + ", '" + getWorld().getName() + "', " + getDate() + ", " + getX() + ", " + getY() + ", " + getZ() + ", " + getTypeId() + ", " + getRollback() + ")");
+			stmt.executeUpdate("INSERT INTO blocklog_blocks (entity, triggered, block_id, datavalue, gamemode, world, date, x, y, z, type) VALUES ('" + getEntityName() + "', '" + getPlayerName() + "', " + getBlockId() + ", " + getDataValue() + ", " + getPlayerGameMode() + ", '" + getWorld().getName() + "', " + getDate() + ", " + getX() + ", " + getY() + ", " + getZ() + ", " + getTypeId() + ")");
 		} catch (SQLException e) {
     		e.printStackTrace();
     	}
@@ -114,14 +112,6 @@ public class BlockEdit {
 	
 	public String getPlayerName() {
 		return this.pname.replaceAll("'", "''");
-	}
-	
-	public int getRollback() {
-		return rollback;
-	}
-	
-	public void setRollback(int id) {
-		this.rollback = id;
 	}
 	
 	public long getDate() {

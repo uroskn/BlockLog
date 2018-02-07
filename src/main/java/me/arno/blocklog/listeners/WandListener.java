@@ -41,7 +41,6 @@ public class WandListener extends BlockLogListener {
 				query.where("y", location.getBlockY());
 				query.where("z", location.getBlockZ());
 				query.where("world", location.getWorld().getName());
-				query.where("rollback_id", 0);
 				query.orderBy("date", "DESC");
 				query.limit(maxResults);
 				

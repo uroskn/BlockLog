@@ -97,7 +97,6 @@ public class CommandLookup extends BlockLogCommand {
 				query.where("z", zMax.toString(), "<=");
 			}
 			query.where("world", world.getName());
-			query.where("rollback_id", 0);
 			query.groupBy("x");
 			query.groupBy("y");
 			query.groupBy("z");
