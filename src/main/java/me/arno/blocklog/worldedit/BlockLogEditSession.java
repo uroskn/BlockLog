@@ -29,15 +29,6 @@ public class BlockLogEditSession extends EditSession {
 		this.plugin = lb;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public BlockLogEditSession(LocalWorld world, int maxBlocks, BlockBag blockBag, LocalPlayer player, BlockLog lb) {
-		super(world, maxBlocks, blockBag);
-		this.player = player;
-		this.plugin = lb;
-	}
-
 	@Override
 	public boolean rawSetBlock(Vector pt, BaseBlock block) {
 		if (!this.plugin.getConfig().getBoolean("welog"))

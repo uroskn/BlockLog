@@ -21,11 +21,6 @@ public class BlockLogEditSessionFactory extends EditSessionFactory {
 		return new BlockLogEditSession(world, maxBlocks, player, plugin);
 	}
 
-	@Override
-	public EditSession getEditSession(LocalWorld world, int maxBlocks, BlockBag blockBag, LocalPlayer player) {
-		return new BlockLogEditSession(world, maxBlocks, blockBag, player, plugin);
-	}
-
 	public static void initialize(BlockLog logBlock) {
 		try {
 			// Check to see if the world edit version is compatible
