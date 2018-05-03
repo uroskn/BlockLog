@@ -23,9 +23,11 @@ public class CommandQueue extends BlockLogCommand {
 			if(player == null) {
 				log.info(String.format("The queue contains %s block edits", getQueueManager().getEditQueueSize()));
 				log.info(String.format("Inrate @ %s b/s, Outrate %s b/s", getQueueManager().GetInRate(), getQueueManager().GetOutRate()));
+				log.info(String.format("Written total %s blocks", getQueueManager().GetWritten()));
 			} else {
 				player.sendMessage(String.format(ChatColor.DARK_RED +"[BlockLog] " + ChatColor.GOLD + "The queue contains %s block edits", getQueueManager().getEditQueueSize()));
 				player.sendMessage(String.format(ChatColor.DARK_RED +"[BlockLog] " + ChatColor.GOLD + "Inrate @ %s b/s, Outrate %s b/s", getQueueManager().GetInRate(), getQueueManager().GetOutRate()));
+				player.sendMessage(String.format(ChatColor.DARK_RED +"[BlockLog] " + ChatColor.GOLD + "Written total %s blocks", getQueueManager().GetWritten()));
 			}
 		}
 		else

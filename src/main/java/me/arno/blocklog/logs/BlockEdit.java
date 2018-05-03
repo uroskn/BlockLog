@@ -44,7 +44,22 @@ public class BlockEdit {
 		this.pname = (player == null) ? "#environment" : player.getName().toLowerCase();
 	}
 	
-	/* ugly hack */
+	public BlockEdit(String name, GameMode gm, int blockid, byte blockdata, Location loc, LogType type, World world, EntityType entity)
+	{
+		this.plugin = BlockLog.plugin;
+		this.player = null;
+		this.blockid = blockid;
+		this.blockdata = blockdata;
+		this.loc = loc;
+		this.type = type;
+		this.date = (System.currentTimeMillis()/1000);
+		this.gamemode = gm;
+		this.entity = (entity == null) ? EntityType.UNKNOWN : entity;
+		this.block = null;
+		this.world = world;
+		this.pname = name.toLowerCase();
+	}	
+	
 	public BlockEdit(String name, GameMode gm, int blockid, byte blockdata, Location loc, LogType type, World world)
 	{
 		this.plugin = BlockLog.plugin;

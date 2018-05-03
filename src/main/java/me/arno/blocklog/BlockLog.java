@@ -15,7 +15,7 @@ import me.arno.blocklog.logs.LogType;
 import me.arno.blocklog.managers.*;
 import me.arno.blocklog.schedules.Save;
 import me.arno.blocklog.util.Text;
-import me.arno.blocklog.worldedit.BlockLogEditSessionFactory;
+import me.arno.blocklog.worldedit.EventHandler;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -25,6 +25,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.sk89q.worldedit.WorldEdit;
 
 import static org.bukkit.Bukkit.getPluginManager;
 
@@ -119,7 +121,7 @@ public class BlockLog extends JavaPlugin {
     	
     	if (getPluginManager().getPlugin("WorldEdit") != null) {
     		log.info("Found worldedit!");
-			BlockLogEditSessionFactory.initialize(this);
+    		WorldEdit.getInstance().getEventBus().register(new EventHandler(this));
 		}
     	
     	if (getPluginManager().getPlugin("TreeAssist") != null)

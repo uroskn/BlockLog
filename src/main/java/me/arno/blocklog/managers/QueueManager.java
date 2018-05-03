@@ -13,11 +13,13 @@ import me.arno.blocklog.logs.BlockEdit;
 
 import net.knuples.misc.StatCounter;
 
+// TODO FIX THIS, WE DON'T NEED THAT MANY INFO.
 public class QueueManager extends BlockLogManager {
 	private final ConcurrentLinkedQueue<BlockEdit> blockEdits = new ConcurrentLinkedQueue<BlockEdit>();
 	
 	private StatCounter inrate = new StatCounter();
 	private StatCounter outrate = new StatCounter();
+	private int written = 0;
 	
 	/**
 	 * Logs a block edit by the environment.
@@ -65,6 +67,7 @@ public class QueueManager extends BlockLogManager {
 	 */
 	public void queueBlockEdit(Player player, BlockState block, EntityType entity, LogType type) {
 		inrate.Count();
+		this.written++;
 		blockEdits.add(new BlockEdit(player, block, entity, type));
 	}
 	
@@ -72,6 +75,12 @@ public class QueueManager extends BlockLogManager {
 	{
 		inrate.Count();
 		blockEdits.add(new BlockEdit(name, gm, blockid, blockdata, loc, type, world));
+	}
+	
+	public void queueBlockEditRaw(String name, GameMode gm, int blockid, byte blockdata, Location loc, org.bukkit.World world, LogType type, EntityType entity)
+	{
+		inrate.Count();
+		blockEdits.add(new BlockEdit(name, gm, blockid, blockdata, loc, type, world, entity));
 	}
 	
 	/**
@@ -106,6 +115,10 @@ public class QueueManager extends BlockLogManager {
 	{
 		return outrate.GetRate();
 	}
-
+	
+	public int GetWritten() 
+	{
+		return this.written;
+	}
 	
 }

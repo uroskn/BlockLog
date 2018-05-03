@@ -27,14 +27,15 @@ public class CreeperHealListener extends BlockLogListener {
 		new BukkitRunnable() {
 			 
             public void run() {
-            	getQueueManager().queueBlockEditWE(
+            	getQueueManager().queueBlockEditRaw(
             			"#creeperHeal",
         				GameMode.SURVIVAL,
         				loc.getBlock().getTypeId(),
         				loc.getBlock().getData(),
         				loc,
         				loc.getWorld(),
-        				LogType.PLACE
+        				LogType.PLACE,
+        				null
             	);
             }
 		}.runTaskLater(this.plugin, 1);
